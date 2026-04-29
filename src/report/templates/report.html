@@ -1,0 +1,115 @@
+<![CDATA[<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>{{ meta.stock_name }}({{ meta.stock_code }}) 量化分析报告</title>
+<style>
+body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; color: #333; line-height: 1.6; }
+h1 { color: #1f77b4; border-bottom: 3px solid #1f77b4; padding-bottom: 12px; margin-bottom: 20px; }
+h2 { color: #2c3e50; margin-top: 35px; border-left: 4px solid #1f77b4; padding-left: 10px; }
+h3 { color: #34495e; margin-top: 20px; }
+.meta-box { background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); padding: 20px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.meta-box p { margin: 8px 0; }
+table { border-collapse: collapse; width: 100%; margin: 15px 0; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+th, td { border: 1px solid #dee2e6; padding: 10px 12px; text-align: left; }
+th { background: #1f77b4; color: white; font-weight: 600; }
+tr:nth-child(even) { background: #f8f9fa; }
+tr:hover { background: #e3f2fd; }
+.interp-box { background: #e8f4fd; padding: 15px; border-left: 4px solid #1f77b4; margin: 15px 0; border-radius: 0 8px 8px 0; }
+.warning { color: #d62728; font-weight: 500; }
+.success { color: #2ca02c; font-weight: 500; }
+.section { margin-bottom: 30px; }
+.disclaimer { background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%); padding: 20px; border-radius: 8px; margin-top: 40px; border: 1px solid #ffc107; }
+.disclaimer h2 { border-left-color: #ffc107; color: #856404; }
+ul { padding-left: 20px; }
+li { margin: 8px 0; }
+</style>
+</head>
+<body>
+<h1>{{ meta.stock_name }}({{ meta.stock_code }}) 量化分析报告</h1>
+
+<div class="meta-box">
+<p><strong>📅 分析区间:</strong> {{ meta.start_date }} ~ {{ meta.end_date }}</p>
+<p><strong>📊 基准指数:</strong> {{ meta.benchmark }}</p>
+<p><strong>💾 数据源:</strong> {{ meta.data_source }}</p>
+<p><strong>🕐 生成时间:</strong> {{ generated_at }}</p>
+</div>
+
+{% set sections = [
+    ("performance", "📈 行情表现分析"),
+    ("return_distribution", "📊 收益率分布"),
+    ("risk_metrics", "⚠️ 风险指标分析"),
+    ("benchmark_comparison", "🎯 基准比较分析"),
+    ("ols_capm", "📉 OLS/CAPM 回归"),
+    ("time_series_tests", "🔬 时间序列检验"),
+    ("garch", "📈 GARCH 波动率模型"),
+    ("technical_indicators", "📐 技术指标分析"),
+    ("fundamental", "💰 基本面分析"),
+    ("liquidity", "💧 流动性分析"),
+    ("backtesting", "🔄 策略回测"),
+    ("score", "⭐ 综合评分"),
+] %}
+
+{% for key, title in sections %}
+{% set r = results.get(key, {}) %}
+{% if r and r.get("success") %}
+<div class="section">
+<h2>{{ title }}</h2>
+{% if r.get("interpretation") %}
+<div class="interp-box">{{ r.interpretation | replace("\n", "<br>") }}</div>
+{% endif %}
+{% set data = r.get("data", {}) %}
+{% if data %}
+<table>
+<tr><th>指标</th><th>值</th></tr>
+{% for k, v in data.items() %}
+{% if v is not mapping and v is not sequence %}
+<tr><td>{{ k }}</td><td>{{ v }}</td></tr>
+{% endif %}
+{% endfor %}
+</table>
+{% endif %}
+</div>
+{% endif %}
+{% endfor %}
+
+{% set conclusion = results.get("conclusion", {}) %}
+{% if conclusion %}
+<h2>📋 核心结论</h2>
+<ul>
+{% for s in conclusion.get("summary", []) %}
+<li>{{ s }}</li>
+{% endfor %}
+</ul>
+
+{% if conclusion.get("strengths") %}
+<h3>✅ 优点</h3>
+<ul>
+{% for s in conclusion.strengths %}<li>{{ s }}</li>{% endfor %}
+</ul>
+{% endif %}
+
+{% if conclusion.get("risks") %}
+<h3>⚠️ 风险点</h3>
+<ul>
+{% for s in conclusion.risks %}<li>{{ s }}</li>{% endfor %}
+</ul>
+{% endif %}
+
+{% if conclusion.get("limitations") %}
+<h3>📌 局限性</h3>
+<ul>
+{% for s in conclusion.limitations %}<li>{{ s }}</li>{% endfor %}
+</ul>
+{% endif %}
+{% endif %}
+
+<div class="disclaimer">
+<h2>⚠️ 免责声明</h2>
+<p>本报告基于历史数据自动生成，仅供学习和研究参考，不构成任何投资建议。投资者应独立判断并承担投资风险。历史表现不代表未来收益。</p>
+<p>本报告使用的模型和指标均有其假设前提和局限性，实际投资决策应结合更多因素综合考量。</p>
+</div>
+
+</body>
+</html>
+]]>

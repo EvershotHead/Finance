@@ -1,0 +1,54 @@
+# ===== Stock Quant Analyzer 默认配置 =====
+
+# 数据源配置
+data_source:
+  default: auto  # auto / akshare / tushare
+  cache_enabled: true
+  cache_expire_hours: 24
+
+# 分析参数
+analysis:
+  trading_days_per_year: 252
+  default_risk_free_rate: 0.02  # 年化无风险利率
+  var_confidence_levels: [0.95, 0.99]
+  rolling_windows: [20, 60, 120]
+  
+  # ARMA 搜索范围
+  arma_max_p: 3
+  arma_max_q: 3
+  
+  # GARCH 默认参数
+  garch_model: GARCH  # GARCH / EGARCH / GJR-GARCH
+  garch_p: 1
+  garch_q: 1
+  garch_distribution: t  # normal / t
+  
+  # 回测参数
+  backtest_commission: 0.0003  # 0.03%
+
+# 技术指标参数
+technical:
+  ma_periods: [5, 10, 20, 60, 120]
+  ema_periods: [12, 26]
+  macd_signal: 9
+  rsi_periods: [6, 14, 24]
+  bollinger_period: 20
+  bollinger_std: 2
+  atr_period: 14
+
+# 基准指数
+benchmarks:
+  "000300": "沪深300"
+  "000001": "上证指数"
+  "399001": "深证成指"
+  "399006": "创业板指"
+  "000905": "中证500"
+  "000852": "中证1000"
+
+# 默认分析区间（天数）
+default_period_days: 1095  # 约3年
+
+# 输出配置
+output:
+  decimal_places: 4
+  chart_theme: plotly_white
