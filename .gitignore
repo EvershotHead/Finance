@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Data (too large for git, re-fetch by running the app)
+data/raw/
+data/clean/
+data/feature_store/
+data/screen_results/
+
+# Outputs (generated files)
+outputs/screener_exports/
+outputs/screener_reports/
+outputs/batch_compare/
+outputs/logs/
+
+# Sensitive
+.env
+TushareToken.txt
+
+# Temporary test files
+test_*.py
+diagnose_*.py
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Pytest
+.pytest_cache/

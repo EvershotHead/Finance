@@ -1,0 +1,291 @@
+# Preset screening templates
+
+risk_averse:
+  name: "风险厌恶型"
+  description: "寻找波动小、回撤小、流动性好、基本面不太差的股票"
+  risk_warning: "低波动不等于无风险，市场系统性风险仍存在。"
+  universe:
+    market: "A股"
+    boards: []
+    industries: []
+    exclude_st: true
+    exclude_suspended: true
+    min_listing_days: 365
+    min_data_quality_score: 60
+  stages:
+    - name: "流动性初筛"
+      logic: "AND"
+      rules:
+        - { field: "avg_amount_20d", operator: ">=", value: 50000000 }
+    - name: "风险筛选"
+      logic: "AND"
+      rules:
+        - { field: "volatility_120d", operator: "percentile_lte", value: 50 }
+        - { field: "max_drawdown_120d", operator: ">=", value: -0.25 }
+        - { field: "beta_120d", operator: "<=", value: 1.0 }
+    - name: "估值筛选"
+      logic: "AND"
+      rules:
+        - { field: "pe_ttm", operator: ">", value: 0 }
+    - name: "数据质量"
+      logic: "AND"
+      rules:
+        - { field: "data_quality_score", operator: ">=", value: 60 }
+  ranking:
+    score_model: "risk_averse"
+    sort_by: "total_score"
+    ascending: false
+    top_n: 50
+
+low_price_high_liquidity:
+  name: "小资金低价高流动型"
+  description: "适合小资金、关注低价且成交活跃的股票"
+  risk_warning: "低价股不等于低风险，可能存在基本面较弱、波动较大、投机性较强等问题。"
+  universe:
+    market: "A股"
+    boards: []
+    industries: []
+    exclude_st: true
+    exclude_suspended: true
+    min_listing_days: 180
+    min_data_quality_score: 60
+  stages:
+    - name: "价格筛选"
+      logic: "AND"
+      rules:
+        - { field: "latest_close", operator: "<=", value: 20 }
+    - name: "流动性筛选"
+      logic: "AND"
+      rules:
+        - { field: "avg_amount_20d", operator: ">=", value: 100000000 }
+        - { field: "turnover_rate_20d", operator: ">=", value: 1.0 }
+    - name: "数据质量"
+      logic: "AND"
+      rules:
+        - { field: "data_quality_score", operator: ">=", value: 60 }
+  ranking:
+    score_model: "balanced"
+    sort_by: "total_score"
+    ascending: false
+    top_n: 50
+
+value_undervalued:
+  name: "价值低估型"
+  description: "寻找估值相对不高、盈利能力尚可的股票"
+  risk_warning: "低估值可能是价值陷阱，需结合基本面质量判断。"
+  universe:
+    market: "A股"
+    boards: []
+    industries: []
+    exclude_st: true
+    exclude_suspended: true
+    min_listing_days: 180
+    min_data_quality_score: 60
+  stages:
+    - name: "估值筛选"
+      logic: "AND"
+      rules:
+        - { field: "pe_ttm", operator: "between", value: [0, 30] }
+        - { field: "pb", operator: "between", value: [0, 3] }
+    - name: "盈利筛选"
+      logic: "AND"
+      rules:
+        - { field: "roe", operator: ">=", value: 8 }
+    - name: "流动性筛选"
+      logic: "AND"
+      rules:
+        - { field: "avg_amount_20d", operator: ">=", value: 50000000 }
+    - name: "数据质量"
+      logic: "AND"
+      rules:
+        - { field: "data_quality_score", operator: ">=", value: 60 }
+  ranking:
+    score_model: "value_focused"
+    sort_by: "total_score"
+    ascending: false
+    top_n: 50
+
+growth_quality:
+  name: "成长质量型"
+  description: "寻找收入和利润增长较好、盈利质量不错的公司"
+  risk_warning: "高成长可能伴随高估值，需注意成长的可持续性。"
+  universe:
+    market: "A股"
+    boards: []
+    industries: []
+    exclude_st: true
+    exclude_suspended: true
+    min_listing_days: 365
+    min_data_quality_score: 60
+  stages:
+    - name: "成长筛选"
+      logic: "AND"
+      rules:
+        - { field: "revenue_growth_yoy", operator: ">=", value: 10 }
+        - { field: "net_profit_growth_yoy", operator: ">=", value: 10 }
+    - name: "盈利质量"
+      logic: "AND"
+      rules:
+        - { field: "roe", operator: ">=", value: 10 }
+    - name: "流动性筛选"
+      logic: "AND"
+      rules:
+        - { field: "avg_amount_20d", operator: ">=", value: 50000000 }
+    - name: "数据质量"
+      logic: "AND"
+      rules:
+        - { field: "data_quality_score", operator: ">=", value: 60 }
+  ranking:
+    score_model: "growth_focused"
+    sort_by: "total_score"
+    ascending: false
+    top_n: 50
+
+short_term_momentum:
+  name: "短线强势型"
+  description: "寻找近期表现强、成交活跃、技术趋势向上的股票"
+  risk_warning: "短线强势股回撤可能较大，不适合风险厌恶型用户。"
+  universe:
+    market: "A股"
+    boards: []
+    industries: []
+    exclude_st: true
+    exclude_suspended: true
+    min_listing_days: 180
+    min_data_quality_score: 60
+  stages:
+    - name: "动量筛选"
+      logic: "AND"
+      rules:
+        - { field: "ret_5d", operator: ">", value: 0 }
+        - { field: "ret_20d", operator: ">", value: 0 }
+    - name: "技术趋势"
+      logic: "AND"
+      rules:
+        - { field: "price_above_ma20", operator: "=", value: true }
+        - { field: "ma20_above_ma60", operator: "=", value: true }
+    - name: "流动性筛选"
+      logic: "AND"
+      rules:
+        - { field: "avg_amount_20d", operator: ">=", value: 100000000 }
+        - { field: "amount_ratio_20d", operator: ">=", value: 1.0 }
+    - name: "数据质量"
+      logic: "AND"
+      rules:
+        - { field: "data_quality_score", operator: ">=", value: 60 }
+  ranking:
+    score_model: "short_term_momentum"
+    sort_by: "total_score"
+    ascending: false
+    top_n: 50
+
+long_term_trend:
+  name: "长期趋势型"
+  description: "寻找中长期趋势较好、相对大盘强势的股票"
+  risk_warning: "过去表现不代表未来，趋势可能随时反转。"
+  universe:
+    market: "A股"
+    boards: []
+    industries: []
+    exclude_st: true
+    exclude_suspended: true
+    min_listing_days: 365
+    min_data_quality_score: 60
+  stages:
+    - name: "长期收益"
+      logic: "AND"
+      rules:
+        - { field: "ret_120d", operator: ">", value: 0 }
+        - { field: "ret_252d", operator: ">", value: 0 }
+    - name: "相对强度"
+      logic: "AND"
+      rules:
+        - { field: "relative_strength_vs_hs300_120d", operator: ">", value: 0 }
+    - name: "趋势确认"
+      logic: "AND"
+      rules:
+        - { field: "price_above_ma120", operator: "=", value: true }
+        - { field: "ma60_above_ma120", operator: "=", value: true }
+    - name: "风险控制"
+      logic: "AND"
+      rules:
+        - { field: "max_drawdown_252d", operator: ">=", value: -0.35 }
+    - name: "流动性筛选"
+      logic: "AND"
+      rules:
+        - { field: "avg_amount_20d", operator: ">=", value: 50000000 }
+  ranking:
+    score_model: "balanced"
+    sort_by: "total_score"
+    ascending: false
+    top_n: 50
+
+high_dividend_defense:
+  name: "高股息防御型"
+  description: "寻找股息率较高、波动较低、盈利相对稳定的股票"
+  risk_warning: "高股息可能不可持续，需关注公司现金流和分红政策。"
+  universe:
+    market: "A股"
+    boards: []
+    industries: []
+    exclude_st: true
+    exclude_suspended: true
+    min_listing_days: 365
+    min_data_quality_score: 60
+  stages:
+    - name: "股息筛选"
+      logic: "AND"
+      rules:
+        - { field: "dividend_yield", operator: ">=", value: 2 }
+    - name: "估值筛选"
+      logic: "AND"
+      rules:
+        - { field: "pe_ttm", operator: ">", value: 0 }
+    - name: "盈利筛选"
+      logic: "AND"
+      rules:
+        - { field: "roe", operator: ">=", value: 6 }
+    - name: "风险控制"
+      logic: "AND"
+      rules:
+        - { field: "volatility_120d", operator: "percentile_lte", value: 50 }
+    - name: "流动性筛选"
+      logic: "AND"
+      rules:
+        - { field: "avg_amount_20d", operator: ">=", value: 30000000 }
+  ranking:
+    score_model: "risk_averse"
+    sort_by: "total_score"
+    ascending: false
+    top_n: 50
+
+balanced:
+  name: "均衡型"
+  description: "在收益、风险、估值、质量、流动性之间综合平衡"
+  risk_warning: "均衡策略不保证在任何市场环境下都表现最佳。"
+  universe:
+    market: "A股"
+    boards: []
+    industries: []
+    exclude_st: true
+    exclude_suspended: true
+    min_listing_days: 365
+    min_data_quality_score: 60
+  stages:
+    - name: "流动性筛选"
+      logic: "AND"
+      rules:
+        - { field: "avg_amount_20d", operator: ">=", value: 50000000 }
+    - name: "估值筛选"
+      logic: "AND"
+      rules:
+        - { field: "pe_ttm", operator: ">", value: 0 }
+    - name: "数据质量"
+      logic: "AND"
+      rules:
+        - { field: "data_quality_score", operator: ">=", value: 60 }
+  ranking:
+    score_model: "balanced"
+    sort_by: "total_score"
+    ascending: false
+    top_n: 50

@@ -1,0 +1,63 @@
+# Scoring weight configurations
+# Each profile defines weights for 8 sub-scores (must sum to 1.0)
+
+balanced:
+  description: "均衡型 — 收益、风险、估值、质量综合平衡"
+  weights:
+    return_score: 0.15
+    risk_score: 0.20
+    liquidity_score: 0.15
+    value_score: 0.15
+    quality_score: 0.15
+    growth_score: 0.10
+    technical_score: 0.05
+    data_quality_score: 0.05
+
+risk_averse:
+  description: "风险厌恶型 — 重视风险控制和流动性"
+  weights:
+    return_score: 0.10
+    risk_score: 0.35
+    liquidity_score: 0.20
+    value_score: 0.10
+    quality_score: 0.15
+    growth_score: 0.05
+    technical_score: 0.00
+    data_quality_score: 0.05
+
+short_term_momentum:
+  description: "短线强势型 — 重视短期动量和技术趋势"
+  weights:
+    return_score: 0.30
+    risk_score: 0.10
+    liquidity_score: 0.20
+    value_score: 0.05
+    quality_score: 0.05
+    growth_score: 0.05
+    technical_score: 0.20
+    data_quality_score: 0.05
+    moneyflow_score: 0.00
+
+value_focused:
+  description: "价值低估型 — 重视估值和盈利质量"
+  weights:
+    return_score: 0.05
+    risk_score: 0.15
+    liquidity_score: 0.10
+    value_score: 0.30
+    quality_score: 0.25
+    growth_score: 0.05
+    technical_score: 0.05
+    data_quality_score: 0.05
+
+growth_focused:
+  description: "成长质量型 — 重视成长性和盈利质量"
+  weights:
+    return_score: 0.10
+    risk_score: 0.10
+    liquidity_score: 0.10
+    value_score: 0.10
+    quality_score: 0.20
+    growth_score: 0.25
+    technical_score: 0.10
+    data_quality_score: 0.05

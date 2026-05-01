@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>A股智能选股筛选报告</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; margin: 40px; color: #333; }
+        h1 { color: #1f77b4; border-bottom: 2px solid #1f77b4; padding-bottom: 10px; }
+        h2 { color: #2c3e50; margin-top: 30px; }
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #1f77b4; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .metric { display: inline-block; margin: 10px 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; }
+        .metric-value { font-size: 24px; font-weight: bold; color: #1f77b4; }
+        .metric-label { font-size: 14px; color: #666; }
+        .disclaimer { background-color: #fff3cd; border: 1px solid #ffc107; padding: 15px; border-radius: 5px; margin-top: 30px; }
+        .reason { color: #28a745; }
+        .risk { color: #dc3545; }
+    </style>
+</head>
+<body>
+    <h1>A股智能选股筛选报告</h1>
+    <p><strong>生成时间</strong>: {{ generated_at }}</p>
+
+    <h2>1. 筛选概况</h2>
+    <div>
+        <div class="metric">
+            <div class="metric-value">{{ total_before }}</div>
+            <div class="metric-label">筛选前股票数</div>
+        </div>
+        <div class="metric">
+            <div class="metric-value">{{ total_after }}</div>
+            <div class="metric-label">筛选后股票数</div>
+        </div>
+    </div>
+
+    <h2>2. 候选股票列表</h2>
+    <table>
+        <tr>
+            <th>排名</th><th>代码</th><th>名称</th><th>行业</th>
+            <th>收盘价</th><th>PE(TTM)</th><th>20日收益</th><th>综合评分</th>
+        </tr>
+        {% for _, row in candidates.head(50).iterrows() %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ row.get('stock_code', '') }}</td>
+            <td>{{ row.get('stock_name', '') }}</td>
+            <td>{{ row.get('industry', '') }}</td>
+            <td>{{ "%.2f"|format(row.get('latest_close', 0)) }}</td>
+            <td>{{ "%.2f"|format(row.get('pe_ttm', 0)) }}</td>
+            <td>{{ "%.2f"|format(row.get('ret_20d', 0) * 100) }}%</td>
+            <td>{{ "%.1f"|format(row.get('total_score', 0)) }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>3. 免责声明</h2>
+    <div class="disclaimer">
+        <strong>免责声明</strong>: 本报告仅供学习和辅助分析使用，不构成任何投资建议。
+        股票市场存在风险，投资需谨慎。过去的业绩不代表未来表现。
+        本系统不推荐买入、卖出或持有任何股票。
+    </div>
+</body>
+</html>
