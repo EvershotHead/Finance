@@ -24,6 +24,7 @@ data/raw/
 data/clean/
 data/feature_store/
 data/screen_results/
+data/fetch_progress.json
 
 # Outputs (generated files)
 outputs/screener_exports/
@@ -35,9 +36,9 @@ outputs/logs/
 .env
 TushareToken.txt
 
-# Temporary test files
-test_*.py
-diagnose_*.py
+# Temporary test/debug scripts (keep tests/ directory)
+/test_*.py
+/diagnose_*.py
 
 # OS
 .DS_Store
