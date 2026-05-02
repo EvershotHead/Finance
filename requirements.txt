@@ -1,0 +1,41 @@
+# StockAnalyzer - A股智能选股与多因子深度分析系统
+# Python 3.11+
+
+# ===== 核心框架 =====
+streamlit>=1.30.0
+pandas>=2.1.0
+numpy>=1.26.0
+
+# ===== 数据源 =====
+akshare>=1.12.0
+tushare>=1.4.0
+
+# ===== 可视化 =====
+plotly>=5.18.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
+
+# ===== 统计与计量经济学 =====
+scipy>=1.11.0
+statsmodels>=0.14.0
+arch>=6.2.0
+scikit-learn>=1.3.0
+
+# ===== 存储 =====
+duckdb>=0.10.0
+pyarrow>=14.0.0
+openpyxl>=3.1.0
+
+# ===== 配置与工具 =====
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
+PyYAML>=6.0.0
+loguru>=0.7.0
+
+# ===== 报告与导出 =====
+Jinja2>=3.1.0
+markdown>=3.5.0
+
+# ===== 测试 =====
+pytest>=7.4.0
